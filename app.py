@@ -7,13 +7,12 @@ from flask import g
 import sqlite3 as lite
 
 database = 'hw12.db'
-secret_key = 'secret_key'
 username = 'admin'
 password = 'password'
 
 app = Flask(__name__)
 app.config['DATABASE'] = database
-app.config.from_object(__name__)
+app.secret_key = 'dev'
 
 
 def connect_db():
