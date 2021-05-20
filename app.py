@@ -6,18 +6,18 @@ from flask import session
 from flask import g
 import sqlite3 as lite
 
-DATABASE = 'hw12.db'
+database = 'hw12.db'
 secret_key = 'secret_key'
 username = 'admin'
 password = 'password'
 
 app = Flask(__name__)
-app.config['DATABASE'] = DATABASE
+app.config['DATABASE'] = database
 app.config.from_object(__name__)
 
 
 def connect_db():
-    db = lite.connect(DATABASE)
+    db = lite.connect(database)
     db.row_factory = lite.Row
     return db
 
