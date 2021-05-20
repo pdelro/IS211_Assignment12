@@ -6,27 +6,25 @@ from flask import session
 from flask import g
 import sqlite3 as lite
 
-database = 'hw12.db'
+DATABASE = 'hw12.db'
 secret_key = 'secret_key'
 username = 'admin'
 password = 'password'
 
 app = Flask(__name__)
+app.config['DATABASE'] = DATABASE
 app.config.from_object(__name__)
 
 
 def connect_db():
-    db = lite.connect(database)
+    db = lite.connect(DATABASE)
     db.row_factory = lite.Row
     return db
 
 
 @app.before_request
 def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g.db = connect_db()
-    return db
+    g.db = connect_db()
 
 
 @app.teardown_request
