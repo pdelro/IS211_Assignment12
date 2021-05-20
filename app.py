@@ -22,16 +22,23 @@ def connect_db():
     return db
 
 
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = lite.connect(database)
+    return db
+
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+
 @app.before_request
 def get_db():
     g.db = connect_db()
-
-
-@app.teardown_request
-def close_connection(exception):
-    db = hasattr(g, '_database', None)
-    if db is not None:
-        db.close()
 
 
 @app.route('/')
