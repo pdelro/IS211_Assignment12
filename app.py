@@ -137,7 +137,7 @@ def add_result():
                 students = [dict(student_id=row[0], first_name=row[1], last_name=row[2]) for row in cur.fetchall()]
                 cur2 = g.db.execute("SELECT quiz_id, subject FROM quizzes ORDER BY quiz_id")
                 quizzes = [dict(quiz_id=row[0], subject=row[1]) for row in cur2.fetchall()]
-                return render_template('add_results.html', students=students, quizzes=quizzes)
+                return render_template('add_quiz_results.html', students=students, quizzes=quizzes)
 
             elif request.method == 'POST':
                 g.db.execute("INSERT INTO results (student_id, quiz_id, result) VALUES (?, ?, ?)", [request.form['add_student'], request.form['add_quiz'], request.form['add_result']])
