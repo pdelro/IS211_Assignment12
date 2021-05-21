@@ -14,6 +14,11 @@ app = Flask(__name__)
 app.config['DATABASE'] = database
 app.secret_key = 'dev'
 
+def init_db():
+    db = get_db()
+    with app.open_resource('schema.sql') as f:
+        db.executescript(f.read().decode('utf8'))
+
 
 def connect_db():
     db = lite.connect(database)
@@ -36,7 +41,7 @@ def close_connection(exception):
 
 
 @app.before_request
-def get_db():
+def before_request():
     g.db = connect_db()
 
 
@@ -64,10 +69,10 @@ def login():
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    if session ['username'] == 'admin':
-        cur = g.db.execute('SELECT student_id, first_name, last_name FROM students order by student_id')
+    if session['username'] == 'admin':
+        cur = g.db.execute('SELECT student_id, first_name, last_name FROM Students order by student_id')
         students = [dict(student_id=row[0], first_name=row[1], last_name=row[2]) for row in cur.fetchall()]
-        cur2 = g.db.execute('SELECT quiz_id, subject, number_of_questions, quiz_date FROM quizzes order by quiz_id')
+        cur2 = g.db.execute('SELECT quiz_id, subject, number_of_questions, quiz_date FROM Quizzes order by quiz_id')
         quizzes = [dict(quiz_id=row[0], subject=row[1], number_of_questions=row[2], quiz_date=row[3]) for row in cur2.fetchall()]
 
         return render_template('dashboard.html', students=students, quizzes=quizzes)
@@ -81,7 +86,7 @@ def add_student():
             return render_template('add_student.html')
         elif request.method == 'POST':
             try:
-                g.db.execute("INSERT INTO students (first_name, last_name) VALUES (?, ?)", [request.form['first_name'], request.form['last_name']])
+                g.db.execute("INSERT INTO Students (first_name, last_name) VALUES (?, ?)", (request.form['first_name'], request.form['last_name']))
                 g.db.commit()
                 return redirect('/dashboard')
             except Exception as e:
