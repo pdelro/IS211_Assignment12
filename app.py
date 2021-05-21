@@ -112,18 +112,18 @@ def add_quiz():
         return redirect('/login')
 
 @app.route('/student/<id>')
-def get_results(id):
-
+def view_results(id):
     if session['username'] == 'admin':
         cur = g.db.execute(
-            'SELECT quizzes.quiz_id quizzes.subject, quizzes.quiz_date quiz_results.result '
-            'FROM students INNER JOIN results ON students.student_id = quiz_results.result_id '
-            'INNER JOIN quizzes ON quizzes.quiz_id  = quiz_results.quiz_id '
-            'WHERE students.id = ?', [id]
+            'SELECT Quizzes.quiz_id, Quizzes.subject, Quizzes.quiz_date, Quiz_Results.result '
+            'FROM Quiz_Results INNER JOIN Quizzes ON Quiz_Results.quiz_id = Quizzes.quiz_id '
+            'INNER JOIN Students ON Quiz_Results.student_id = Students.student_id '
+            'WHERE Students.student_id = ?',
+            [id]
         )
 
         res = cur.fetchall()
-        student_results = [dict(quiz_id=row[0], quiz_subject=row[1], quiz_date=row[2], result=row[3]) for row in res]
+        student_results = [dict(quiz_id=row[0], subject=row[1], quiz_date=row[2], result=row[3]) for row in res]
         return render_template('view_student_results.html', student_results=student_results)
     else:
         return redirect('/login')

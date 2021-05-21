@@ -18,9 +18,7 @@ CREATE TABLE `Quiz_Results`(
     result_id INTEGER PRIMARY KEY AUTOINCREMENT,
     result INTEGER NOT NULL,
     quiz_id INTEGER NOT NULL,
-    student_id INTEGER NOT NULL,
-    FOREIGN KEY(quiz_id) REFERENCES Quizzes(quiz_id),
-    FOREIGN KEY(student_id) REFERENCES Students(student_id)
+    student_id INTEGER NOT NULL
     );
 
 INSERT INTO 'Students' (student_id, first_name, last_name) VALUES
